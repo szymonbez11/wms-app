@@ -251,6 +251,8 @@ def login():
 def upload():
     file = request.files.get("file")
 
+     print("UPLOAD:", file.filename)
+
     if not file:
         return "brak pliku", 400
 
