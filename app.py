@@ -27,7 +27,6 @@ ADMIN_TOKEN = "MEGA_SECRET_123"
 app = Flask(__name__)
 app.secret_key = "secret"
 
-ensure()   # 🔥 TO ROZWIĄZUJE PROBLEM
 
 orders = {}
 workers = {}
@@ -38,6 +37,9 @@ workers = {}
 def ensure():
     os.makedirs(WEJSCIE, exist_ok=True)
     os.makedirs(WYJSCIE, exist_ok=True)
+
+
+ensure()   # 🔥 TUTAJ (po definicji)
 
 # =========================
 # DB
