@@ -172,9 +172,7 @@ def generate_pdf(path, order, contractor, worker):
 # SYNC
 # =========================
 def sync():
-    ensure()  # 🔥 DODAJ TO
-    
-     files = [f for f in os.listdir(WEJSCIE) if f.lower().endswith(".pdf")]
+    files = [f for f in os.listdir(WEJSCIE) if f.lower().endswith(".pdf")]
 
     for f in files:
         path = os.path.join(WEJSCIE, f)
@@ -196,7 +194,6 @@ def sync():
             del orders[f]
 
     save_db()
-
 # =========================
 # ROUTES
 # =========================
