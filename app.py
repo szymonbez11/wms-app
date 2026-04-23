@@ -172,6 +172,8 @@ def generate_pdf(path, order, contractor, worker):
 # SYNC
 # =========================
 def sync():
+    ensure()  # 🔥 DODAJ TO
+    
     files = [f for f in os.listdir(WEJSCIE) if f.lower().endswith(".pdf")]
 
     for f in files:
