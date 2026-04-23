@@ -26,6 +26,7 @@ ADMIN_TOKEN = "MEGA_SECRET_123"
 
 app = Flask(__name__)
 app.secret_key = "secret"
+
 ensure()   # 🔥 TO ROZWIĄZUJE PROBLEM
 
 orders = {}
