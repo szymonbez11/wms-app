@@ -251,14 +251,14 @@ def login():
 def upload():
     file = request.files.get("file")
 
-     print("UPLOAD:", file.filename)
+    print("UPLOAD:", file.filename)  # ✅ poprawnie
 
     if not file:
         return "brak pliku", 400
 
     path = os.path.join(WEJSCIE, file.filename)
     file.save(path)
-
+    
     contractor = extract_contractor(path)
 
     orders[file.filename] = {
