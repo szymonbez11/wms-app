@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WMS - Kompletacja</title>
+
+<style>
+body { margin:0; font-family:Arial; background:#f3f4f6; }
+
+.header {
+    background:#111827;
+    color:white;
+    padding:15px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.user-box {
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logout {
+    background:#ef4444;
+    color:white;
+    padding:6px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:12px;
+}
+
+.container { padding:12px; max-width:900px; margin:auto; }
+
+.card {
+    background:white;
+    border-radius:14px;
+    padding:14px;
+    margin-bottom:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.08);
+}
+
+.file { font-weight:bold; font-size:16px; }
+
+.badge {
+    font-size:12px;
+    padding:4px 8px;
+    border-radius:8px;
+}
+
+.free { background:#e5e7eb; }
+.progress { background:#f59e0b; color:white; }
+.done { background:#16a34a; color:white; }
+
+.progressbar {
+    height:8px;
+    background:#e5e7eb;
+    border-radius:6px;
+    margin-top:8px;
+}
+
+.progressfill {
+    height:8px;
+    background:#2563eb;
+    border-radius:6px;
+}
+
+.btn {
+    display:block;
+    margin-top:10px;
+    padding:10px;
+    text-align:center;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    text-decoration:none;
+}
+
+.btn-disabled {
+    background:#9ca3af;
+    pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <div>📦 Zamówienia</div>
+
+    <div class="user-box">
+        <div>👤 {{ user }}</div>
+        <a href="/logout" class="logout">Wyloguj</a>
+    </div>
+</div>
+
+<div class="container">
+
+{% for file, o in orders.items() %}
+
+{% set total = 0 %}
+{% set done = 0 %}
+
+{% for i in o["items"] %}
+    {% set total = total + i["ilosc"] %}
+    {% set done = done + i["zebrane"] %}
+{% endfor %}
+
+{% set percent = (done / total * 100) if total > 0 else 0 %}
+
+<div class="card">
+
+    <!-- 🔥 NAZWA KONTRAHENTA -->
+    <div class="file">{{ o.display_name }}</div>
+
+    <!-- STATUS -->
+    <div>
+        {% if o.status == 'free' %}
+            <span class="badge free">WOLNE</span>
+
+        {% elif o.status == 'progress' %}
+            <span class="badge progress">
+                W TRAKCIE ({{ o.worker }})
+            </span>
+
+        {% elif o.status == 'done' %}
+            <span class="badge done">
+                ✔ ZROBIONE ({{ o.worker }})
+            </span>
+        {% endif %}
+    </div>
+
+    <!-- PROGRES -->
+    <div class="progressbar">
+        <div class="progressfill" style="width: {{ percent }}%"></div>
+    </div>
+
+    <div style="font-size:12px;">
+        {{ percent|round(0) }}% ({{ done }}/{{ total }})
+    </div>
+
+    <!-- 🔥 PRZYCISKI -->
+    {% if o.status == 'free' %}
+        <a class="btn" href="/order/{{ file }}">▶ Start</a>
+
+    {% elif o.status == 'progress' %}
+        {% if o.worker == user %}
+            <a class="btn" href="/order/{{ file }}">🔄 Kontynuuj</a>
+        {% else %}
+            <div class="btn btn-disabled">🔒 Zajęte</div>
+        {% endif %}
+
+    {% elif o.status == 'done' %}
+        <div class="btn btn-disabled">✔ Zrobione</div>
+    {% endif %}
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kompletacja</title>
+
+<style>
+body { font-family: Arial; background:#f3f4f6; margin:0; }
+
+.header {
+    background:#111827;
+    color:white;
+    padding:15px;
+}
+
+.container { padding:10px; }
+
+.card {
+    background:white;
+    padding:12px;
+    border-radius:10px;
+    margin-bottom:10px;
+}
+
+input {
+    width:100%;
+    padding:10px;
+    font-size:18px;
+    margin-top:8px;
+    text-align:center;
+}
+
+.finish {
+    position:fixed;
+    bottom:20px;
+    left:50%;
+    transform:translateX(-50%);
+    width:90%;
+    max-width:400px;
+    padding:15px;
+    font-size:18px;
+    background:#16a34a;
+    color:white;
+    border:none;
+    border-radius:12px;
+}
+</style>
+
+<script>
+function updateItem(id, max) {
+    let input = document.getElementById("i"+id);
+    let val = parseFloat(input.value || 0);
+
+    if (val < 0) val = 0;
+    if (val > max) val = max;
+
+    input.value = val;
+
+    fetch("/update/{{ name }}/" + id, {
+        method: "POST",
+        body: new URLSearchParams({ qty: val })
+    });
+}
+
+// 🔥 NOWE — usuwa 0 po kliknięciu
+function clearZero(el) {
+    if (el.value == "0" || el.value == "0.0") {
+        el.value = "";
+    }
+}
+</script>
+
+</head>
+
+<body>
+
+<div class="header">
+📦 {{ order.display_name if order.display_name else name }} | 👤 {{ user }}
+</div>
+
+<div class="container">
+
+{% for i in items %}
+
+<div class="card">
+    <b>{{ i.towar }}</b><br><br>
+
+    📦 Zamówione:
+    <b>
+        {{ i.ilosc|int if i.ilosc == i.ilosc|int else i.ilosc }}
+    </b>
+    <br>
+
+    📥 Zebrane:
+    <b>
+        {{ i.zebrane|int if i.zebrane == i.zebrane|int else i.zebrane }}
+    </b>
+
+    <input
+        id="i{{ i.id }}"
+        type="number"
+        step="0.01"
+        value="{{ i.zebrane }}"
+        min="0"
+        max="{{ i.ilosc }}"
+        onfocus="clearZero(this)"
+        onchange="updateItem({{ i.id }}, {{ i.ilosc }})"
+    >
+</div>
+
+{% endfor %}
+
+</div>
+
+<form method="POST" action="/finish/{{ name }}">
+    <button class="finish">✔ ZAKOŃCZ</button>
+</form>
+
+</body>
+</html>
