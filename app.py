@@ -406,7 +406,7 @@ def api_workers():
 
 @app.route("/version")
 def version():
-    return {"version": "1.1"}
+    return {"version": "1.2"}
 
 @app.route("/api/done")
 def api_done():
