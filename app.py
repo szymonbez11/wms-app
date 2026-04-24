@@ -404,6 +404,10 @@ def api_admin():
 def api_workers():
     return workers
 
+@app.route("/version")
+def version():
+    return {"version": "1.0"}
+
 @app.route("/api/done")
 def api_done():
     return [f for f,o in orders.items() if o.get("status")=="done"]
